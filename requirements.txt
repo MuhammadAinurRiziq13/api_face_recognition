@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+psycopg2-binary
+mtcnn
+keras-facenet
+opencv-python
+tensorflow
+sqlalchemy
+pydantic
+scikit-learn         
+pandas               
+numpy
+alembic
+joblib
