@@ -107,9 +107,9 @@ async def upload_image(file: UploadFile = File(...)):
 # Endpoint to add a new employee and retrain the model
 @app.post("/add_pegawai/")
 async def add_pegawai(
-    id_pegawai: str = Query(...),  # Mengambil id_pegawai dari query string
-    files: list[UploadFile] = File(...),  # Mengambil file dari form-data
-    db: Session = Depends(get_db)  # Mendapatkan koneksi DB
+    id_pegawai: str = Query(...),  
+    files: list[UploadFile] = File(...),  
+    db: Session = Depends(get_db)  
 ):
     # Check if exactly 5 photos are uploaded
     if len(files) != 5:
@@ -129,16 +129,16 @@ async def add_pegawai(
         foto_paths.append(file_path)
 
     # Save employee data into the database
-    pegawai = Pegawai(
-        id_pegawai=id_pegawai,
-        foto_1=foto_paths[0] if len(foto_paths) > 0 else None,
-        foto_2=foto_paths[1] if len(foto_paths) > 1 else None,
-        foto_3=foto_paths[2] if len(foto_paths) > 2 else None,
-        foto_4=foto_paths[3] if len(foto_paths) > 3 else None,
-        foto_5=foto_paths[4] if len(foto_paths) > 4 else None
-    )
-    db.add(pegawai)
-    db.commit()
+    # pegawai = Pegawai(
+    #     id_pegawai=id_pegawai,
+    #     foto_1=foto_paths[0] if len(foto_paths) > 0 else None,
+    #     foto_2=foto_paths[1] if len(foto_paths) > 1 else None,
+    #     foto_3=foto_paths[2] if len(foto_paths) > 2 else None,
+    #     foto_4=foto_paths[3] if len(foto_paths) > 3 else None,
+    #     foto_5=foto_paths[4] if len(foto_paths) > 4 else None
+    # )
+    # db.add(pegawai)
+    # db.commit()
 
     # Retrain the model with the updated dataset
     dataset_directory = "app/dataset"  
