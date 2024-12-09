@@ -5,7 +5,6 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations
 import tensorflow as tf  
 from fastapi import FastAPI, File, UploadFile, Depends,HTTPException,Query
 from fastapi.responses import JSONResponse
-from app.models import Pegawai
 from app.face_recognition import FaceRecognition
 from app.svm_model import train_face_recognition_model
 import numpy as np
