@@ -5,8 +5,6 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations
 import tensorflow as tf  
 from fastapi import FastAPI, File, UploadFile, Depends,HTTPException,Query
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-from app.database import get_db
 from app.models import Pegawai
 from app.face_recognition import FaceRecognition
 from app.svm_model import train_face_recognition_model
@@ -109,7 +107,6 @@ async def upload_image(file: UploadFile = File(...)):
 async def add_pegawai(
     id_pegawai: str = Query(...),  
     files: list[UploadFile] = File(...),  
-    db: Session = Depends(get_db)  
 ):
     # Check if exactly 5 photos are uploaded
     if len(files) != 5:
@@ -127,18 +124,6 @@ async def add_pegawai(
         with open(file_path, "wb") as f:
             f.write(await file.read())
         foto_paths.append(file_path)
-
-    # Save employee data into the database
-    # pegawai = Pegawai(
-    #     id_pegawai=id_pegawai,
-    #     foto_1=foto_paths[0] if len(foto_paths) > 0 else None,
-    #     foto_2=foto_paths[1] if len(foto_paths) > 1 else None,
-    #     foto_3=foto_paths[2] if len(foto_paths) > 2 else None,
-    #     foto_4=foto_paths[3] if len(foto_paths) > 3 else None,
-    #     foto_5=foto_paths[4] if len(foto_paths) > 4 else None
-    # )
-    # db.add(pegawai)
-    # db.commit()
 
     # Retrain the model with the updated dataset
     dataset_directory = "app/dataset"  
