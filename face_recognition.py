@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score
 import os
 
 class FaceRecognition:
-    def __init__(self, dataset_directory="app/dataset"):
+    def __init__(self, dataset_directory="dataset"):
         self.directory = dataset_directory  # Mengarah ke app/dataset
         self.target_size = (160, 160)
         self.detector = MTCNN()

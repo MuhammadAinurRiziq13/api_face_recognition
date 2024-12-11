@@ -5,8 +5,8 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations
 import tensorflow as tf  
 from fastapi import FastAPI, File, UploadFile, Depends,HTTPException,Query
 from fastapi.responses import JSONResponse
-from app.face_recognition import FaceRecognition
-from app.svm_model import train_face_recognition_model
+from face_recognition import FaceRecognition
+from svm_model import train_face_recognition_model
 import numpy as np
 import pickle
 from joblib import dump  
@@ -17,8 +17,8 @@ import cv2 as cv
 app = FastAPI()
 
 # Global model and encoder
-MODEL_PATH = os.path.join("app", "model", "svm_model.pkl")
-ENCODER_PATH = os.path.join("app", "model", "encoder.pkl")
+MODEL_PATH = os.path.join( "model", "svm_model.pkl")
+ENCODER_PATH = os.path.join("model", "encoder.pkl")
 model = None
 encoder = None
 
@@ -50,7 +50,7 @@ def read_root():
 @app.post("/train_model/")
 async def train_model():
     try:
-        dataset_directory = "app/dataset"  # Path to dataset
+        dataset_directory = "dataset"  # Path to dataset
         model, encoder = train_face_recognition_model(dataset_directory)
         await load_model()
         return {"message": "Model and encoder trained and saved successfully."}
@@ -67,7 +67,7 @@ async def upload_image(file: UploadFile = File(...)):
     image_bytes = await file.read()
 
     try:
-        face_recognition = FaceRecognition("app/dataset")  
+        face_recognition = FaceRecognition("dataset")  
         
         # Ekstraksi wajah
         faces = face_recognition.extract_face_from_bytes(image_bytes)  
@@ -112,7 +112,7 @@ async def add_pegawai(
         return {"message": "You must upload exactly 5 photos."}
 
     # Create a folder for the employee (id_pegawai) if it does not exist
-    dataset_directory = f"app/dataset/{id_pegawai}"
+    dataset_directory = f"dataset/{id_pegawai}"
     if not os.path.exists(dataset_directory):
         os.makedirs(dataset_directory)
 
@@ -125,7 +125,7 @@ async def add_pegawai(
         foto_paths.append(file_path)
 
     # Retrain the model with the updated dataset
-    dataset_directory = "app/dataset"  
+    dataset_directory = "dataset"  
     model, encoder = train_face_recognition_model(dataset_directory)
     
     await load_model()
