@@ -100,7 +100,7 @@ async def upload_image(file: UploadFile = File(...)):
     except Exception as e:
         return {"message": f"Error during processing: {str(e)}"}
 
-
+# 
 # Endpoint to add a new employee and retrain the model
 @app.post("/add_pegawai/")
 async def add_pegawai(
