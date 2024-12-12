@@ -6,6 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import os
+from skimage import exposure
 
 class FaceRecognition:
     def __init__(self, dataset_directory="dataset"):
@@ -14,6 +15,22 @@ class FaceRecognition:
         self.detector = MTCNN()
         self.embedder = FaceNet()
         self.encoder = LabelEncoder()
+        
+    def preprocess_image(self, image):
+        # Convert to RGB (if it's in BGR format)
+        image_rgb = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        
+        # Denoising the image using GaussianBlur
+        denoised_image = cv.GaussianBlur(image_rgb, (5, 5), 0)
+
+        # Apply Adaptive Histogram Equalization to improve local contrast
+        # Apply this to each channel separately
+        denoised_image = np.stack([exposure.equalize_adapthist(denoised_image[:, :, i]) for i in range(3)], axis=2)
+
+        # Normalize back to the range [0, 255] for each channel
+        denoised_image = np.uint8(denoised_image * 255)
+
+        return denoised_image
     
     def extract_face(self, filename):
         """ Extract face from image using MTCNN detector """
@@ -36,7 +53,8 @@ class FaceRecognition:
             return None
 
         img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-        faces = self.detector.detect_faces(img)
+        preprocessed_image = self.preprocess_image(img)
+        faces = self.detector.detect_faces(preprocessed_image)
         if len(faces) == 0:
             return None
         x, y, w, h = faces[0]['box']

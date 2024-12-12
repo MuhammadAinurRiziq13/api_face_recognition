@@ -10,8 +10,6 @@ from svm_model import train_face_recognition_model
 import numpy as np
 import pickle
 from joblib import dump  
-from mtcnn import MTCNN
-import cv2 as cv
 
 # Initialize FastAPI
 app = FastAPI()
